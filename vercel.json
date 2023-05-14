@@ -11,11 +11,8 @@
     "routes": [
       {
         "src": "/(.*)",
-        "dest": "/app.js"
+        "dest": "/"
       }
-    ],
-    "env": {
-      "CUSTOM_ENV_VAR": "your-custom-env-var-value"
-    }
+    ]
   }
   
