@@ -1,0 +1,13 @@
+# Node.js related files and directories
+*.env
+
+# Dependency directories
+*.log
+
+# IDE and editor files
+.vscode/
+/venv
+/node_modules
+
+# Miscellaneous files and directories
+package-lock.json
