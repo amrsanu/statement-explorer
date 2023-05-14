@@ -1,9 +1,10 @@
 const path = require('path');
 const express = require('express');
 
-const shopController = require('../controllers/statement');
+const statementController = require('../controllers/statement');
 
 const router = express.Router();
 
-router.get('/', shopController.getIndex);
+router.get('/', statementController.getIndex);
+
 module.exports = router;

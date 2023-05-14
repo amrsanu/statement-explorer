@@ -20,6 +20,7 @@ app.get('/', (req, res, next) => {
 });
 
 // app.use(statementRoutes);
+app.use("/", statementRoutes);
 
 // Page Not Found handler
 app.use((err, req, res, next) => {
