@@ -19,14 +19,6 @@
     ],
     "env": {
       "CUSTOM_ENV_VAR": "your-custom-env-var-value"
-    },
-    "installConfig": {
-      "include": [
-        "dependencies",
-        "devDependencies",
-        "optionalDependencies",
-        "peerDependencies"
-      ]
     }
   }
   
