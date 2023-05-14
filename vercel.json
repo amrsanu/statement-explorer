@@ -2,20 +2,31 @@
     "version": 2,
     "name": "statement-explorer",
     "builds": [
-        { 
+        {
             "src": "package.json", 
-            "use": "@vercel/npm" }
-    ],
-    [
+            "use": "@vercel/npm" 
+        },
         {
             "src": "app.js",
             "use": "@vercel/node"
         }
     ],
     "routes": [
-        {
-            "src": "/(.*)",
-            "dest": "/app.js"
-        }
-    ]
-}
+      {
+        "src": "/(.*)",
+        "dest": "/app.js"
+      }
+    ],
+    "env": {
+      "CUSTOM_ENV_VAR": "your-custom-env-var-value"
+    },
+    "installConfig": {
+      "include": [
+        "dependencies",
+        "devDependencies",
+        "optionalDependencies",
+        "peerDependencies"
+      ]
+    }
+  }
+  
