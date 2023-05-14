@@ -13,7 +13,7 @@ exports.getStatement = (req, res, next) => {
     expense_type_option: 'All',
     credit_or_debit: ['All', 'Credit', 'Debit'], 
     expense_type: ['All', 'Food', 'Transportation', 'Entertainment', 'Shopping', 'Others'], 
-    statement_table: ''
+    statement_table: 'Use the filter to get personalized information from Statement'
   });
 };
 
@@ -25,16 +25,24 @@ exports.postStatement = (req, res, next) => {
       expense_type_option: 'All',
     credit_or_debit: ['All', 'Credit', 'Debit'], 
     expense_type: ['All', 'Food', 'Transportation', 'Entertainment', 'Shopping', 'Others'], 
-    statement_table: "statement_table"
+    statement_table: "Statement will be Updated here [WIP]"
   });
 };
 
-// exports.getUpdateStatement = (req, res, next) => {
-//   res.render('statement/update-statement', {
-//     pageTitle: 'Update Statement',
-//     path: '/update-statement',
-//   });
-// };
+exports.getUpdateStatement = (req, res, next) => {
+  res.render('statement/update-statement', {
+    pageTitle: 'Update Statement',
+    path: '/update-statement',
+    bank_option: "Select Bank",
+    banks: ["HDFC", "ICICI"],
+    upload_error: null,
+    statement_files: ''
+  });
+};
+
+exports.postUpdateStatement = (req, res, next) => {
+  return res.redirect('/');
+};
 
 exports.getHelp = (req, res, next) => {
   res.render('statement/help', {

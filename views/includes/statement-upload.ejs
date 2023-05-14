@@ -1,0 +1,28 @@
+<div id="form-container">
+    <% if (upload_error) { %>
+        <p>Error: File format not supported. Upload CSV or TXT format. </p>
+    <% } %>
+    <form method="post" enctype="multipart/form-data">
+        <table>
+        <tr>
+            <td><label for="bank">Select Bank:</label></td>
+            <td>
+            <select name="bank">
+                <option value="<%= bank_option %>"><%= bank_option %></option>
+                <% for (let bank of banks) { %>
+                    <option value="<%= bank %>"><%= bank %></option>
+                <% } %>
+            </select>
+            </td>
+        </tr>
+        <tr>
+            <td><label for="statement">Bank Statement:</label></td>
+            <td><input type="file" id="statement" name="statement"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button type="submit">Submit</button></td>
+        </tr>
+        </table>
+    </form>
+</div>

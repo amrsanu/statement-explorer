@@ -10,7 +10,8 @@ router.get('/', statementController.getIndex);
 router.get('/bank-statement', statementController.getStatement);
 router.post('/bank-statement', statementController.postStatement);
 
-// router.get('/update-statement', statementController.getUpdateStatement);
+router.get('/update-statement', statementController.getUpdateStatement);
+router.post('/update-statement', statementController.postUpdateStatement);
 
 router.get('/help', statementController.getHelp);
 
