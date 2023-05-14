@@ -17,6 +17,11 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use(serveStatic(path.join(__dirname, 'public')));
 
+app.get('/', (req, res, next) => {
+  res.send("<h1>Welcome</h1>");
+});
+
+
 // app.use(express.static(path.join(__dirname, 'public')));
 app.use("/", statementRoutes);
 
