@@ -19,6 +19,7 @@ app.use(statementRoutes);
 // Page Not Found handler
 app.use((err, req, res, next) => {
   console.error(err.stack);
+  console.error("Something went wrong");
   res.status(500).send('Something broke!');
 });
 
