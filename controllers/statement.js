@@ -4,3 +4,10 @@ exports.getIndex = (req, res, next) => {
     path: '/',
   });
 };
+
+exports.getHelp = (req, res, next) => {
+  res.render('statement/help', {
+    pageTitle: 'Help',
+    path: '/help',
+  });
+};
