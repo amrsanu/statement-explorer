@@ -4,7 +4,6 @@ const path = require('path');
 // Third party packages
 const bodyParser = require('body-parser');
 const express = require('express');
-const serveStatic = require('serve-static');
 
 const app = express();
 
