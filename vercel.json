@@ -1,10 +1,8 @@
 {
     "version": 2,
     "name": "statement-explorer",
+    "installCommand": "npm install",
     "builds": [
-        {
-            "use": "npm" 
-        },
         {
             "src": "app.js",
             "use": "@vercel/node"
