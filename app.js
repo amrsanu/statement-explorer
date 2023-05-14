@@ -16,6 +16,13 @@ app.set('views', './views');
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(statementRoutes);
 
+app.get('/', (req, res, next) => {
+  res.render('statement/index', {
+    pageTitle: 'Home',
+    path: '/',
+  });
+});
+
 // Page Not Found handler
 app.use((err, req, res, next) => {
   console.error(err.stack);
