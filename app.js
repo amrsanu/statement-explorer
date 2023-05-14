@@ -14,9 +14,10 @@ app.set('view engine', 'ejs');
 app.set('views', 'views');
 
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(statementRoutes);
+// app.use(statementRoutes);
 
 app.get('/', (req, res, next) => {
+  console.log("At index page");
   res.render('statement/index', {
     pageTitle: 'Home',
     path: '/',
