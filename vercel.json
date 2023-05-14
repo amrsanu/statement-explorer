@@ -1,18 +1,13 @@
 {
     "version": 2,
-    "name": "statement-explorer",
     "installCommand": "npm install",
     "builds": [
         { "src": "app.js", "use": "@vercel/node" },
-        { "src": "/public/(.*)", "dest": "/public/$1" },
     ],
     "routes": [
       {
-        "src": "/(.*)",
-        "dest": "/app.js"
+        "src": "/(.*)"
       }
-    ],
-    "cleanUrls": true,
-    "trailingSlash": false
+    ]
   }
   
