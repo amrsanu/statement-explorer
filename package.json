@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "This is an initiative to enhance the readability of your bank statement, while prioritizing the security of your sensitive information.",
   "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "build": "webpack --mode production"
+  },
   "author": "Amrendra Pratap Singh",
   "license": "ISC",
   "dependencies": {
