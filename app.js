@@ -14,13 +14,11 @@ app.set('view engine', 'ejs');
 app.set('views', 'views');
 
 app.use(express.static(path.join(__dirname, 'public')));
-app.get('/', (req, res, next) => {
-  console.log("At index page");
-  res.render('statement/index');
-});
-
 // app.use(statementRoutes);
-app.use("/", statementRoutes);
+
+app.get('/', (req, res, next) => {
+  res.send(<h1>Working till here...</h1>)
+});
 
 // Page Not Found handler
 app.use((err, req, res, next) => {
