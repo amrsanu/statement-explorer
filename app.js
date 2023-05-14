@@ -4,6 +4,8 @@ const path = require('path');
 // Third party packages
 const bodyParser = require('body-parser');
 const express = require('express');
+const serveStatic = require('serve-static');
+
 const app = express();
 
 // Use defined packages
@@ -11,12 +13,12 @@ const errorController = require('./controllers/error');
 const statementRoutes = require('./routes/statement');
 
 app.set('view engine', 'ejs');
-app.set('views', 'views');
+app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', (req, res, next) => {
-  res.send(<h1>Working till here...</h1>)
+  res.send("<h1>Welcome</h1>");
 });
 
 // app.use(statementRoutes);

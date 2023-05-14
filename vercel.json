@@ -1,6 +1,5 @@
 {
     "version": 2,
-    "name": "statement-explorer",
     "installCommand": "npm install",
     "builds": [
         {
@@ -11,11 +10,8 @@
     "routes": [
       {
         "src": "/(.*)",
-        "dest": "/app.js"
+        "dest": "/"
       }
-    ],
-    "env": {
-      "CUSTOM_ENV_VAR": "your-custom-env-var-value"
-    }
+    ]
   }
   

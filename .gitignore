@@ -11,3 +11,4 @@
 
 # Miscellaneous files and directories
 package-lock.json
+.vercel
