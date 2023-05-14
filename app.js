@@ -11,16 +11,13 @@ const errorController = require('./controllers/error');
 const statementRoutes = require('./routes/statement');
 
 app.set('view engine', 'ejs');
-app.set('views', './views');
+app.set('views', 'views');
 
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(statementRoutes);
+// app.use(statementRoutes);
 
 app.get('/', (req, res, next) => {
-  res.render('statement/index', {
-    pageTitle: 'Home',
-    path: '/',
-  });
+  res.send(<h1>Working till here...</h1>)
 });
 
 // Page Not Found handler
