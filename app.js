@@ -26,4 +26,6 @@ app.use('/', (req, res, next) => {
     res.status(err.status || 500).render('404', { message: err.message });
   });
 
-app.listen(3000);
+app.listen(3000, () => {
+  console.log('listening on port 3000');
+});
