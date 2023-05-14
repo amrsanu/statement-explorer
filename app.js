@@ -16,10 +16,7 @@ app.set('views', 'views');
 app.use(express.static(path.join(__dirname, 'public')));
 app.get('/', (req, res, next) => {
   console.log("At index page");
-  res.render('statement/index', {
-    pageTitle: 'Home',
-    path: '/',
-  });
+  res.render('statement/index');
 });
 
 // app.use(statementRoutes);
