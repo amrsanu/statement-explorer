@@ -14,7 +14,7 @@ router.post('/bank-statement', statementController.postStatement);
 
 router.get('/update-statement', statementController.getUpdateStatement);
 router.post('/new-statement', statementController.postNewStatement);
-router.post('/modify-statement', statementController.postModifyStatement);
+router.post('/delete-statement', statementController.postModifyStatement);
 
 router.get('/help', statementController.getHelp);
 

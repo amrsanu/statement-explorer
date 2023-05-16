@@ -1,5 +1,6 @@
 const fs = require('fs');
 
+const DIR_PATH = 'C:/statement-explorer';
 exports.getIndex = (req, res, next) => {
   res.render('statement/index', {
     pageTitle: 'Home',
@@ -8,10 +9,9 @@ exports.getIndex = (req, res, next) => {
 };
 
 exports.getStatement = (req, res, next) => {
-  const dirPath = 'C:/statement-explorer';
   let statement_table = 'Use the filter to get personalized information from Statement';
 
-  fs.readdir(dirPath, (err, files) => {
+  fs.readdir(DIR_PATH, (err, files) => {
     if (err) {
       console.error(err);
       statement_table = err;
@@ -20,7 +20,7 @@ exports.getStatement = (req, res, next) => {
       const fileContents = [];
 
       files.forEach(file => {
-        const filePath = `${dirPath}/${file}`;
+        const filePath = `${DIR_PATH}/${file}`;
 
         // Read the file content
         fs.readFile(filePath, (err, data) => {
@@ -67,14 +67,27 @@ exports.postStatement = (req, res, next) => {
 };
 
 exports.getUpdateStatement = (req, res, next) => {
-  res.render('statement/update-statement', {
-    pageTitle: 'Update Statement',
-    path: '/update-statement',
-    bank_option: "Select Bank",
-    banks: ["HDFC", "ICICI"],
-    upload_error: null,
-    statement_files: ['statement1', "statement2"]
+  let statement_files = [];
+  fs.readdir(DIR_PATH, (err, files) => {
+    if (err) {
+      console.error(err);
+    } else {
+      // Create an array to hold the content of all files
+      files.forEach(file => {
+        statement_files.push(file);
+      })
+    }
+    console.log(statement_files);
+    res.render('statement/update-statement', {
+      pageTitle: 'Update Statement',
+      path: '/update-statement',
+      bank_option: "Select Bank",
+      banks: ["HDFC", "ICICI"],
+      upload_error: null,
+      statement_files: statement_files
+    });
   });
+
 };
 
 exports.postNewStatement = (req, res) => {
@@ -102,7 +115,6 @@ exports.postNewStatement = (req, res) => {
 };
 
 exports.postModifyStatement = (req, res, next) => {
-  console.log("Modify Stetement :", req.body);
   return res.redirect('/update-statement');
 };
 
