@@ -9,12 +9,12 @@
     <h1>Bank Statement</h1>
   <h2>Bank Details</h2>
 
-  <%- include('../includes/statement-upload.ejs') %>
+  <%- include('../includes/new-statement.ejs') %>
 
   <% if (statement_files) { %>
     <h2>Uploaded Bank Statements</h2>
     <div id="form-container">
-      <form method="POST">
+      <form action="/modify-statement" method="POST" >
         <table>
           <tr>
             <td><input type="checkbox" id="select-all" onclick="toggle(this);" /></td>
