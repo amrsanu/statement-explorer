@@ -10,11 +10,21 @@ exports.getIndex = (req, res, next) => {
 
 exports.getStatement = (req, res, next) => {
   let statement_table = 'Use the filter to get personalized information from Statement';
-
+  statement_table = "No Statement Found in Directory";
+  if (!fs.existsSync(DIR_PATH)) {
+    res.render('statement/statement', {
+      min_date: '2020-01-01',
+      max_date: '2023-12-31',
+      credit_or_debit_option: 'All',
+      expense_type_option: 'All',
+      credit_or_debit: ['All', 'Credit', 'Debit'],
+      expense_type: ['All', 'Food', 'Transportation', 'Entertainment', 'Shopping', 'Others'],
+      statement_table: statement_table
+    });
+  }
   fs.readdir(DIR_PATH, (err, files) => {
     if (err) {
       console.error(err);
-      statement_table = err;
     } else {
       // Create an array to hold the content of all files
       const fileContents = [];
@@ -103,6 +113,7 @@ exports.postNewStatement = (req, res) => {
   // Use the mv() method to place the file somewhere on your server
   if (!fs.existsSync(DIR_PATH)) {
     // Create the directory if it does not exist
+    console.log('Creating directory: ' + DIR_PATH);
     fs.mkdirSync(DIR_PATH);
   }
   statement.mv(`${DIR_PATH}/${statement.name}` , function(err) {
