@@ -2,8 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const NodeCache = require('node-cache');
 
-const DIR_PATH = path.join('C:', 'statement-explorer');
-
+let statement_files = [];
 const statementCache = new NodeCache();
 
 exports.getIndex = (req, res, next) => {
@@ -16,7 +15,7 @@ exports.getIndex = (req, res, next) => {
 exports.getStatement = (req, res, next) => {
   let statement_table = statementCache.get('statementData'); // Retrieve statement data from cache
 
-  if (!statement_table) {
+  if (statement_files.length === 0) {
     statement_table = 'Use the filter to get personalized information from Statement';
   }
 
@@ -46,7 +45,6 @@ exports.postStatement = (req, res, next) => {
 };
 
 exports.getUpdateStatement = (req, res, next) => {
-  let statement_files = [];
   res.render('statement/update-statement', {
     pageTitle: 'Update Statement',
     path: '/update-statement',
@@ -68,7 +66,8 @@ exports.postNewStatement = (req, res) => {
 
   // Save the file to the cache
   try {
-    statementCache.set('statementData', statement.data); // Store the file data in the cache with a specific key
+    statement_files.push(statement.name);
+    statementCache.set(statement.name, statement.data); // Store the file data in the cache with a specific key
   } catch (error) {
     console.error(error);
     return res.status(500).send('Server Error: Unable to save file to cache.');
