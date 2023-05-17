@@ -101,11 +101,11 @@ exports.postNewStatement = (req, res) => {
   console.log(req.body);
 
   // Use the mv() method to place the file somewhere on your server
-  if (!fs.existsSync('C:/statement-explorer/')) {
+  if (!fs.existsSync(DIR_PATH)) {
     // Create the directory if it does not exist
-    fs.mkdirSync('C:/statement-explorer/');
+    fs.mkdirSync(DIR_PATH);
   }
-  statement.mv('C:/statement-explorer/' + statement.name, function(err) {
+  statement.mv(`${DIR_PATH}/${statement.name}` , function(err) {
     if (err) {
       console.error(err);
       return res.status(500).send("Server Error: Unable to save file.");
