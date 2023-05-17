@@ -30,8 +30,16 @@
         <button type="submit">Filter</button>
     </form>
     <section>    
-        <%= statement_table %>
-    </section>
+        <table>
+          <% for (let i = 0; i < statement_table.length; i++) { %>
+            <tr>
+              <% for (let j = 0; j < statement_table[i].length; j++) { %>
+                <td><%= statement_table[i][j] %></td>
+              <% } %>
+            </tr>
+          <% } %>
+        </table>
+      </section>
 
 <%- include('../includes/end.ejs') %>
 
