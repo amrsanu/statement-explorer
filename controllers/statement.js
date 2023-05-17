@@ -1,6 +1,7 @@
 const fs = require('fs');
+const path = require('path');
 
-const DIR_PATH = 'C:/statement-explorer';
+const DIR_PATH = path.join('C:', 'statement-explorer');
 exports.getIndex = (req, res, next) => {
   res.render('statement/index', {
     pageTitle: 'Home',
@@ -30,7 +31,7 @@ exports.getStatement = (req, res, next) => {
       const fileContents = [];
 
       files.forEach(file => {
-        const filePath = `${DIR_PATH}/${file}`;
+        const filePath = path.join(DIR_PATH, file);
 
         // Read the file content
         fs.readFile(filePath, (err, data) => {
@@ -116,7 +117,7 @@ exports.postNewStatement = (req, res) => {
     console.log('Creating directory: ' + DIR_PATH);
     fs.mkdirSync(DIR_PATH);
   }
-  statement.mv(`${DIR_PATH}/${statement.name}` , function(err) {
+  statement.mv(path.join(DIR_PATH, statement.name) , function(err) {
     if (err) {
       console.error(err);
       return res.status(500).send("Server Error: Unable to save file.");
