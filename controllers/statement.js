@@ -7,9 +7,30 @@ let statement_files = [];
 const statementCache = new NodeCache();
 
 exports.getIndex = (req, res, next) => {
-  res.render('statement/index', {
+  if (statement_files.length === 0) {
+    const images = [];
+    statement_table = 'Use the filter to get personalized information from Statement';
+
+    return res.render('statement/no-statement', {
+      bank_option: "Select Bank",
+      banks: ["HDFC", "ICICI"],
+      images: [
+        { url: "/images/image1.png", name: "image1" },
+        { url: "/images/images2.png", name: "images2" },
+        { url: "/images/images3.png", name: "images3" },
+        { url: "/images/images4.png", name: "images4" },
+        { url: "/images/images5.png", name: "images5" },
+
+      ],
+      upload_error: null,
+      pageTitle: 'Home',
+      path: '/',
+
+    });
+  }
+  return res.render('statement/index', {
     pageTitle: 'Home',
-    path: '/',
+    path: '/'
   });
 };
 
@@ -42,7 +63,7 @@ exports.getStatement = (req, res, next) => {
   }
 
   // Use the statement_table array for further processing or filtering logic
-  console.log(statement_table);
+  // console.log(statement_table);
 
   // Render the statement page with the table data
   res.render('statement/statement', {

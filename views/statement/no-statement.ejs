@@ -1,0 +1,39 @@
+<%- include('../includes/head.ejs') %>
+<link rel="stylesheet" href="/css/no_statement.css">
+<link rel="stylesheet" href="/css/upload_statement.css">
+<script src="/utils/gallery.js"></script>
+
+</head>
+
+<body>
+    <%- include('../includes/navigation.ejs') %>
+
+    <h1>Statement Explorer Home</h1>
+
+    <!-- Slideshow container -->
+
+    <div class="slideshow-container">
+        <% images.forEach(function(image, index) { %>
+            <div class="mySlides fade <%= index === 0 ? 'active' : '' %>">
+                <img src="<%= image.url %>" style="width:100%">
+                <div class="text"><%= image.name %></div>
+            </div>
+        <% }); %>
+    
+        <!-- Next and previous buttons -->
+        <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+        <a class="next" onclick="plusSlides(1)">&#10095;</a>
+    </div>
+    
+    <br>
+  
+    <div style="text-align:center">
+        <% images.forEach(function(image, index) { %>
+            <span class="dot <%= index === 0 ? 'active' : '' %>" onclick="currentSlide(index + 1)"></span>
+        <% }); %>
+    </div>
+  <h2>Upload Bank Statement</h2>
+    
+    <%- include('../includes/new-statement.ejs') %>
+
+<%- include('../includes/end.ejs') %>
