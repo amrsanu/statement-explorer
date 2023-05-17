@@ -47,17 +47,16 @@ exports.postStatement = (req, res, next) => {
 
 exports.getUpdateStatement = (req, res, next) => {
   let statement_files = [];
-    res.render('statement/update-statement', {
-      pageTitle: 'Update Statement',
-      path: '/update-statement',
-      bank_option: "Select Bank",
-      banks: ["HDFC", "ICICI"],
-      upload_error: null,
-      statement_files: statement_files
-    });
+  res.render('statement/update-statement', {
+    pageTitle: 'Update Statement',
+    path: '/update-statement',
+    bank_option: "Select Bank",
+    banks: ["HDFC", "ICICI"],
+    upload_error: null,
+    statement_files: statement_files
   });
-
 };
+
 
 exports.postNewStatement = (req, res) => {
   if (!req.files || Object.keys(req.files).length === 0) {
