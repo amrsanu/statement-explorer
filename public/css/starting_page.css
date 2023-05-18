@@ -1,45 +1,44 @@
 .container {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .credit-view, .debit-view {
-    text-align: center;
-    display: block;
-    border: 2px solid #ea4343;
-    border-radius: 5px;
-    box-shadow: 2px 2px 2px #ccc;
-    object-fit: cover;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-  }
-  
+.credit-view,
+.debit-view {
+  text-align: center;
+  display: block;
+  border: 0.08em solid #ea4343;
+  border-radius: 1.25em;
+  box-shadow: 0.08em 0.08em 0.08em #ccc;
+  object-fit: contain;
+  width: 100%;
+  height: auto;
+}
+
 #heading1 {
   background-color: #f7df1e; /* yellow */
   color: #2d2d2d; /* dark gray */
-  padding: 10px; /* adds padding around the text */
-  font-size: 36px; /* increases the font size */
+  padding: 1rem; /* adds padding around the text */
+  font-size: 2.25rem; /* increases the font size */
   font-weight: bold; /* makes the text bold */
   text-align: center; /* centers the text */
   text-transform: uppercase; /* makes the text uppercase */
-  box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.2); /* adds a subtle shadow */
+  box-shadow: 0 0.12em 0.2em rgba(0, 0, 0, 0.2); /* adds a subtle shadow */
   margin: 0;
-  margin-bottom: 20px; /* adds space between this heading and the next element */
+  margin-bottom: 1.25rem; /* adds space between this heading and the next element */
 }
-
 
 /* The switch - the box around the slider */
 .switch {
   position: relative;
   display: inline-flex;
-  width: 60px;
-  height: 34px;
-  border-radius: 3px;
-  padding: 8px;
-
+  width: 3.75rem;
+  height: 2.125rem;
+  border-radius: 0.375rem;
+  padding: 0.5rem;
 }
-
 
 /* The slider */
 .slider {
@@ -50,20 +49,18 @@
   right: 0;
   bottom: 0;
   background-color: #db8c0c;
-  -webkit-transition: .4s;
-  transition: .4s;
+  transition: 0.4s;
 }
 
 .slider:before {
   position: absolute;
   content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
+  height: 2.625rem;
+  width: 2.625rem;
+  left: 0.5rem;
+  bottom: 0.5rem;
   background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
+  transition: 0.4s;
 }
 
 /* When the checkbox is checked, change the background color of the slider */
@@ -73,16 +70,14 @@
 
 /* When the checkbox is checked, translate the slider to the right */
 .switch input:checked + .slider:before {
-  -webkit-transform: translateX(26px);
-  -ms-transform: translateX(26px);
-  transform: translateX(26px);
+  transform: translateX(2.625rem);
 }
 
 /* Rounded sliders */
 .slider.round {
-  border-radius: 14px;
+  border-radius: 0.875rem;
 }
 
 .slider.round:before {
-  border-radius: 14px;
+  border-radius: 0.875rem;
 }

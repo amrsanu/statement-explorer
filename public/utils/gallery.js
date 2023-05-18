@@ -1,5 +1,36 @@
 let slideIndex = 0;
-showSlides(slideIndex);
+let slideInterval;
+
+function showSlides() {
+  let i;
+  let slides = document.getElementsByClassName("mySlides");
+  let dots = document.getElementsByClassName("dot");
+
+  for (i = 0; i < slides.length; i++) {
+    slides[i].style.display = "none";
+  }
+  for (i = 0; i < dots.length; i++) {
+    dots[i].className = dots[i].className.replace(" active", "");
+  }
+
+  slideIndex++;
+  if (slideIndex > slides.length) {
+    slideIndex = 1;
+  }
+
+  slides[slideIndex - 1].style.display = "block";
+  dots[slideIndex - 1].className += " active";
+}
+
+// Start the slideshow with auto-scrolling
+function startSlideshow() {
+  slideInterval = setInterval(showSlides, 3000);
+}
+
+// Stop the auto-scrolling
+function stopSlideshow() {
+  clearInterval(slideInterval);
+}
 
 // Next/previous controls
 function plusSlides(n) {
@@ -11,27 +42,10 @@ function currentSlide(n) {
   showSlides(slideIndex = n);
 }
 
-function showSlides(n) {
-  let i;
-  let slides = document.getElementsByClassName("mySlides");
-  let dots = document.getElementsByClassName("dot");
-  if (n >= slides.length) {slideIndex = 0}
-  if (n < 0) {slideIndex = slides.length - 1}
-  for (i = 0; i < slides.length; i++) {
-    slides[i].style.display = "none";
-  }
-  for (i = 0; i < dots.length; i++) {
-    dots[i].className = dots[i].className.replace(" active", "");
-  }
-  slides[slideIndex].style.display = "block";
-  dots[slideIndex].className += " active";
-}
-
-// Wait for the DOM content to be fully loaded before executing the code
+// Set the first slide and dot to be active
 document.addEventListener("DOMContentLoaded", function(event) {
-  // Set the first slide and dot to be active
-  var slides = document.getElementsByClassName("mySlides");
-  var dots = document.getElementsByClassName("dot");
-  slides[0].style.display = "block";
-  dots[0].className += " active";
+  showSlides();
 });
+
+// Start the slideshow
+startSlideshow();
