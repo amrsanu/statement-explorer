@@ -18,11 +18,6 @@ table th {
   font-weight: bold;
 }
 
-table td:first-child,
-table th:first-child {
-  display: none;
-}
-
 table tr:nth-child(even) {
   background-color: #f9f9f9;
 }

@@ -5,23 +5,35 @@ const csv = require('fast-csv');
 
 let statement_files = [];
 const statementCache = new NodeCache();
+let is_statement_updated = false;
+
+const IMAGES = [
+  { url: "/images/image1.png", name: "image1" },
+  { url: "/images/images2.png", name: "images2" },
+  { url: "/images/images3.png", name: "images3" },
+  { url: "/images/images4.png", name: "images4" },
+  { url: "/images/images5.png", name: "images5" },
+
+]
+
+function parseDate(dateString) {
+  const parts = dateString.split('/');
+  const day = parseInt(parts[0], 10);
+  const month = parseInt(parts[1], 10) - 1; // Months are zero-based
+  const year = 2000 + parseInt(parts[2], 10); // Assuming 20xx format
+
+  return new Date(year, month, day);
+}
 
 exports.getIndex = (req, res, next) => {
   if (statement_files.length === 0) {
     const images = [];
-    statement_table = 'Use the filter to get personalized information from Statement';
+    statement_table = ' Use the filter to get personalized information from Statement';
 
     return res.render('statement/no-statement', {
       bank_option: "Select Bank",
       banks: ["HDFC", "ICICI"],
-      images: [
-        { url: "/images/image1.png", name: "image1" },
-        { url: "/images/images2.png", name: "images2" },
-        { url: "/images/images3.png", name: "images3" },
-        { url: "/images/images4.png", name: "images4" },
-        { url: "/images/images5.png", name: "images5" },
-
-      ],
+      images: IMAGES,
       upload_error: null,
       pageTitle: 'Home',
       path: '/',
@@ -36,10 +48,32 @@ exports.getIndex = (req, res, next) => {
 
 exports.getStatement = (req, res, next) => {
   let statement_table = [];
+  let start_date = req.body.start_date;
+  let end_date = req.body.end_date;
+  const credit_or_debit = "All";
+  const expense_type_option = "All";
+
+  if (!start_date){
+    start_date = '01/01/2015';
+  }
+  if (!end_date) {
+    end_date = '01/01/2015';
+  }
+  console.log("Get Statement: ", start_date, end_date, credit_or_debit, expense_type_option);
 
   if (statement_files.length === 0) {
-    statement_table = 'Use the filter to get personalized information from Statement';
-  } else {
+    console.log('No statement files');
+    return res.render('statement/no-statement', {
+      bank_option: "Select Bank",
+      banks: ["HDFC", "ICICI"],
+      images: IMAGES,
+      upload_error: null,
+      pageTitle: 'Home',
+      path: '/',
+
+    });
+  } else if (is_statement_updated === false) {
+
     statement_files.forEach((file) => {
       let fileData = statementCache.get(file);
 
@@ -53,38 +87,80 @@ exports.getStatement = (req, res, next) => {
           Object.values(row).forEach((value) => {
             rowData.push(value);
           });
+          console.log(rowData[0]);
           parsedData.push(rowData);
         });
-
-        // Append the parsed data to the statement table
         statement_table = statement_table.concat(parsedData);
       }
     });
+    statement_table.sort((a, b) => {
+      const dateA = new Date(parseDate(a[0]));
+      const dateB = new Date(parseDate(b[0]));
+      return dateA - dateB;
+    });
+    is_statement_updated = true;
+
+    const filteredTable = statement_table.filter((row) => {
+      const currentDate = parseDate(row[0]);
+      return currentDate >= parseDate(start_date) && currentDate <= parseDate(end_date);
+      statementCache.set("statement_table", statement_table);
+    });
+  } else {
+    console.log('Usning previous statement');
+    statement_table = statementCache.get("statement_table");
   }
-
-  // Use the statement_table array for further processing or filtering logic
-  // console.log(statement_table);
-
+  if (statement_table.length){
+    statement_table = statement_table.map(row => {
+      return row.filter((_, index) => index !== 2);
+    });
+    
+    console.log(statement_table[0], statement_table[statement_table.length - 1]);
+  }
   // Render the statement page with the table data
   res.render('statement/statement', {
-    min_date: '2020-01-01',
-    max_date: '2023-12-31',
-    credit_or_debit_option: 'All',
-    expense_type_option: 'All',
+    min_date: start_date,
+    max_date: end_date,
+    credit_or_debit_option: credit_or_debit,
+    expense_type_option: expense_type_option,
     credit_or_debit: ['All', 'Credit', 'Debit'],
     expense_type: ['All', 'Food', 'Transportation', 'Entertainment', 'Shopping', 'Others'],
-    statement_table: statement_table,
+    statement_table: statement_table
   });
 };
 
 
 exports.postStatement = (req, res, next) => {
-  console.log(req.body);
+  const start_date = req.body.start_date;
+  const end_date = req.body.end_date;
+  const credit_or_debit = req.body.credit_or_debit;
+  const expense_type_option = req.body.category;
+
+  console.log("Filter Statement: ", start_date, end_date, credit_or_debit, expense_type_option);
+
+  if (is_statement_updated === false) {
+    statement_table = statementCache.get("statement_table");
+
+    statement_table.sort((a, b) => {
+      const dateA = new Date(parseDate(a[0]));
+      const dateB = new Date(parseDate(b[0]));
+      return dateA - dateB;
+    });
+    is_statement_updated = true;
+
+    const filteredTable = statement_table.filter((row) => {
+      const currentDate = parseDate(row[0]);
+      return currentDate >= parseDate(start_date) && currentDate <= parseDate(end_date);
+      statementCache.set("statement_table", statement_table);
+    });
+  } else {
+    console.log('Usning previous statement');
+    statement_table = statementCache.get("statement_table");
+  }
   res.render('statement/statement', { 
-    min_date: '2020-01-01', 
-    max_date: '2023-12-31', 
-    credit_or_debit_option: 'All', 
-    expense_type_option: 'All',
+    min_date: start_date,
+    max_date: end_date,
+    credit_or_debit_option: credit_or_debit,
+    expense_type_option: expense_type_option,
     credit_or_debit: ['All', 'Credit', 'Debit'], 
     expense_type: ['All', 'Food', 'Transportation', 'Entertainment', 'Shopping', 'Others'], 
     statement_table: "Statement will be Updated here [WIP]"
@@ -106,13 +182,13 @@ exports.postNewStatement = (req, res) => {
   if (!req.files || Object.keys(req.files).length === 0) {
     return res.status(400).send('No files were uploaded.');
   }
-
   // The name of the input field (i.e., "statement") is used to retrieve the uploaded file
   let statement = req.files.statement;
 
   // Save the file to the cache
   try {
     statement_files.push(statement.name);
+    is_statement_updated = false;
 
     // Filter out empty lines from the CSV data
     const filteredData = statement.data
@@ -147,6 +223,7 @@ exports.postModifyStatement = (req, res, next) => {
   // Assuming statement_files is an array of file names
   let statement_files_to_delete = req.body.statement_file; // Assuming statement_files is an array of file names
   console.log(statement_files_to_delete);
+  is_statement_updated = false;
 
   if (!Array.isArray(statement_files_to_delete)) {
     statement_files_to_delete = [statement_files_to_delete];

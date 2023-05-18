@@ -1,6 +1,6 @@
 <%- include('../includes/head.ejs') %>
-<link rel="stylesheet" href="/css/bank_statement.css">
-
+  <link rel="stylesheet" href="/css/bank_statement.css">
+  <script src="/utils/date.js"></script>
 </head>
 
 <body>
@@ -11,11 +11,12 @@
     <form action="/bank-statement" method="POST">
       <div>
         <label for="start_date">Start Date:</label>
-            <input type="date" name="start_date" value="<%= min_date %>" min="<%= min_date %>" max="<%= max_date %>">
+            <input type="date" name="start_date" value="formatDate(min_date)" min="formatDate(min_date)" max="formatDate(max_date)" pattern="\d{2}\/\d{2}\/\d{2}>
+
       </div>
       <div>
         <label for="end_date">End Date:</label>
-            <input type="date" name="end_date" value="<%= max_date %>" min="<%= min_date %>" max="<%= max_date %>">
+            <input type="date" name="end_date" value="formatDate(max_date)" min="formatDate(min_date)" max="formatDate(max_date)" pattern="\d{2}\/\d{2}\/\d{2}>
       </div>
       <div>
         <label for="category_credit_debit">Credit/Debit:</label>
@@ -39,6 +40,14 @@
     </form>
     <section>    
         <table>
+          <tr>
+            <th>Date</th>
+            <th>Detail</th>
+            <th>Debit Amount</th>
+            <th>Credit Amount</th>
+            <th>Ref Number</th>
+            <th>Closing Balance</th>
+          </tr>
           <% for (let i = 0; i < statement_table.length; i++) { %>
             <tr>
               <% for (let j = 0; j < statement_table[i].length; j++) { %>
