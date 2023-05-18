@@ -1,5 +1,5 @@
 table {
-  font-size: 1.5vw;
+  font-size: 1.2vw;
   border-collapse: collapse;
   width: 100%;
 }
@@ -9,8 +9,8 @@ table td {
   padding: 1vw;
   text-align: left;
   border: 0.1vw solid #ba5555be;
-  font-size: 2vw;
-  min-width: 10vw;
+  font-size: 1.2vw;
+  min-width: max-content;
 }
 
 table th {
