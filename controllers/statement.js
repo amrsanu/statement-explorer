@@ -2,10 +2,12 @@ const fs = require('fs');
 const path = require('path');
 const NodeCache = require('node-cache');
 const csv = require('fast-csv');
+const { pseudoRandomBytes } = require('crypto');
 
 let statement_files = [];
 const statementCache = new NodeCache();
-let is_statement_updated = false;
+let isStatementUpdated = false;
+let isTrimmed = true;
 
 const IMAGES = [
   { url: "/images/image1.png", name: "image1" },
@@ -16,13 +18,38 @@ const IMAGES = [
 
 ]
 
-function parseDate(dateString) {
-  const parts = dateString.split('/');
-  const day = parseInt(parts[0], 10);
-  const month = parseInt(parts[1], 10) - 1; // Months are zero-based
-  const year = 2000 + parseInt(parts[2], 10); // Assuming 20xx format
+function getCurrentDate() {
+  return new Date();
+}
 
-  return new Date(year, month, day);
+function parseDate(dateString) {
+  let separator;
+  if (dateString.includes('/')) {
+    separator = '/';
+    const parts = dateString.split(separator);
+    const day = parseInt(parts[0], 10);
+    const month = parseInt(parts[1], 10) - 1;
+    const year = 2000 + parseInt(parts[2], 10);
+    return new Date(year, month, day);
+
+  } else if (dateString.includes('-')) {
+    separator = '-';
+    const parts = dateString.split(separator);
+    const day = parseInt(parts[2], 10);
+    const month = parseInt(parts[1], 10) - 1;
+    const year = parseInt(parts[0], 10);
+    return new Date(year, month, day);
+  
+  } else {
+    throw new Error('Invalid date format');
+  }  
+}
+
+function formatDateRev(date) {
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = String(date.getFullYear()).padStart(4, '0');
+  return `${year}-${month}-${day}`;
 }
 
 exports.getIndex = (req, res, next) => {
@@ -52,14 +79,7 @@ exports.getStatement = (req, res, next) => {
   let end_date = req.body.end_date;
   const credit_or_debit = "All";
   const expense_type_option = "All";
-
-  if (!start_date){
-    start_date = '01/01/2015';
-  }
-  if (!end_date) {
-    end_date = '01/01/2015';
-  }
-  console.log("Get Statement: ", start_date, end_date, credit_or_debit, expense_type_option);
+  console.log("Statement: ", start_date, end_date, credit_or_debit, expense_type_option);
 
   if (statement_files.length === 0) {
     console.log('No statement files');
@@ -72,7 +92,7 @@ exports.getStatement = (req, res, next) => {
       path: '/',
 
     });
-  } else if (is_statement_updated === false) {
+  } else if (isStatementUpdated === false) {
 
     statement_files.forEach((file) => {
       let fileData = statementCache.get(file);
@@ -87,39 +107,59 @@ exports.getStatement = (req, res, next) => {
           Object.values(row).forEach((value) => {
             rowData.push(value);
           });
-          console.log(rowData[0]);
+          // console.log(rowData[0]);
           parsedData.push(rowData);
         });
         statement_table = statement_table.concat(parsedData);
       }
     });
     statement_table.sort((a, b) => {
-      const dateA = new Date(parseDate(a[0]));
-      const dateB = new Date(parseDate(b[0]));
+      const dateA = parseDate(a[0]);
+      const dateB = parseDate(b[0]);
       return dateA - dateB;
     });
-    is_statement_updated = true;
+    isStatementUpdated = true;
+    // console.log(statement_table[0], statement_table[statement_table.length - 1]);
 
-    const filteredTable = statement_table.filter((row) => {
-      const currentDate = parseDate(row[0]);
-      return currentDate >= parseDate(start_date) && currentDate <= parseDate(end_date);
-      statementCache.set("statement_table", statement_table);
-    });
+    if (!start_date){
+      start_date = parseDate(statement_table[0][0]);
+    }
+    if (!end_date) {
+      end_date = parseDate(statement_table[statement_table.length - 1][0]);
+    }
+    console.log(statement_table[0][0], statement_table[statement_table.length - 1][0]);
+    console.log("Min/Max Statement: ", start_date, end_date, credit_or_debit, expense_type_option);
+
+    statementCache.set("statement_table", statement_table);
   } else {
     console.log('Usning previous statement');
     statement_table = statementCache.get("statement_table");
   }
-  if (statement_table.length){
+  if (statement_files.length !== 0 && isTrimmed){
+    isTrimmed = false;
+    statement_table = statementCache.get("statement_table");
     statement_table = statement_table.map(row => {
       return row.filter((_, index) => index !== 2);
     });
-    
-    console.log(statement_table[0], statement_table[statement_table.length - 1]);
   }
+  min_date = parseDate(statement_table[0][0]);
+  max_date = parseDate(statement_table[statement_table.length - 1][0]);
+  
+  if (!start_date){
+    start_date = min_date;
+  }
+  if (!end_date) {
+    end_date = max_date;
+  }
+  statementCache.set("statement_table", statement_table);
+  console.log("Get Statement: ", formatDateRev(start_date), formatDateRev(end_date), credit_or_debit, expense_type_option);
+
   // Render the statement page with the table data
   res.render('statement/statement', {
-    min_date: start_date,
-    max_date: end_date,
+    start_date: formatDateRev(start_date),
+    end_date: formatDateRev(end_date), 
+    min_date: formatDateRev(min_date),
+    max_date: formatDateRev(max_date),
     credit_or_debit_option: credit_or_debit,
     expense_type_option: expense_type_option,
     credit_or_debit: ['All', 'Credit', 'Debit'],
@@ -134,36 +174,34 @@ exports.postStatement = (req, res, next) => {
   const end_date = req.body.end_date;
   const credit_or_debit = req.body.credit_or_debit;
   const expense_type_option = req.body.category;
-
-  console.log("Filter Statement: ", start_date, end_date, credit_or_debit, expense_type_option);
-
-  if (is_statement_updated === false) {
-    statement_table = statementCache.get("statement_table");
-
-    statement_table.sort((a, b) => {
-      const dateA = new Date(parseDate(a[0]));
-      const dateB = new Date(parseDate(b[0]));
-      return dateA - dateB;
-    });
-    is_statement_updated = true;
-
-    const filteredTable = statement_table.filter((row) => {
-      const currentDate = parseDate(row[0]);
-      return currentDate >= parseDate(start_date) && currentDate <= parseDate(end_date);
-      statementCache.set("statement_table", statement_table);
-    });
-  } else {
-    console.log('Usning previous statement');
-    statement_table = statementCache.get("statement_table");
-  }
+  
+  statement_table = statementCache.get("statement_table");
+  min_date = parseDate(statement_table[0][0]);
+  max_date = parseDate(statement_table[statement_table.length - 1][0]);
+  
+  console.log("Post Statement: ", start_date, end_date, statement_table[0][0]);
+  console.log("Filter Statement: ", parseDate(start_date), parseDate(end_date), parseDate(statement_table[0][0]));
+  console.log(statement_table[0]);
+  const filteredTable = statement_table.filter((row) => {
+    const currentDate = parseDate(row[0]);
+    return currentDate >= parseDate(start_date) && currentDate <= parseDate(end_date);
+  });
+  filteredTable.sort((a, b) => {
+    const dateA = parseDate(a[0]);
+    const dateB = parseDate(b[0]);
+    return dateA - dateB;
+  });
+  console.log("Filtered Statement: ", filteredTable)
   res.render('statement/statement', { 
-    min_date: start_date,
-    max_date: end_date,
+    start_date: start_date,
+    end_date: end_date, 
+    min_date: formatDateRev(min_date),
+    max_date: formatDateRev(max_date),
     credit_or_debit_option: credit_or_debit,
     expense_type_option: expense_type_option,
     credit_or_debit: ['All', 'Credit', 'Debit'], 
     expense_type: ['All', 'Food', 'Transportation', 'Entertainment', 'Shopping', 'Others'], 
-    statement_table: "Statement will be Updated here [WIP]"
+    statement_table: filteredTable
   });
 };
 
@@ -188,7 +226,7 @@ exports.postNewStatement = (req, res) => {
   // Save the file to the cache
   try {
     statement_files.push(statement.name);
-    is_statement_updated = false;
+    isStatementUpdated = false;
 
     // Filter out empty lines from the CSV data
     const filteredData = statement.data
@@ -223,7 +261,7 @@ exports.postModifyStatement = (req, res, next) => {
   // Assuming statement_files is an array of file names
   let statement_files_to_delete = req.body.statement_file; // Assuming statement_files is an array of file names
   console.log(statement_files_to_delete);
-  is_statement_updated = false;
+  isStatementUpdated = false;
 
   if (!Array.isArray(statement_files_to_delete)) {
     statement_files_to_delete = [statement_files_to_delete];

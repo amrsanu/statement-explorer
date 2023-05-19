@@ -11,12 +11,11 @@
     <form action="/bank-statement" method="POST">
       <div>
         <label for="start_date">Start Date:</label>
-            <input type="date" name="start_date" value="formatDate(min_date)" min="formatDate(min_date)" max="formatDate(max_date)" pattern="\d{2}\/\d{2}\/\d{2}>
-
+        <input type="date" name="start_date" value="<%= start_date %>" min="<%= min_date %>" max="<%= max_date %>">
       </div>
       <div>
         <label for="end_date">End Date:</label>
-            <input type="date" name="end_date" value="formatDate(max_date)" min="formatDate(min_date)" max="formatDate(max_date)" pattern="\d{2}\/\d{2}\/\d{2}>
+            <input type="date" name="end_date" value="<%= end_date %>" min="<%= min_date %>" max="<%= max_date %>">
       </div>
       <div>
         <label for="category_credit_debit">Credit/Debit:</label>
