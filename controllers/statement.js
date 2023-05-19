@@ -50,7 +50,6 @@ exports.getStatement = (req, res, next) => {
   let statement_table = [];
   let start_date = req.body.start_date;
   let end_date = req.body.end_date;
-  let bank_option = req.body.bank_option;
 
   const credit_or_debit = "All";
   const expense_type_option = "All";
@@ -71,22 +70,20 @@ exports.getStatement = (req, res, next) => {
   let min_date = start_date;
   let max_date = end_date;
 
-  if (isStatementUpdated === false) {
-    statement_table = [];
-    console.log(statement_files);
-    statement_files.forEach((statement) => {
-      bank = statement.bank;
-      file = statement.file;
-      if (bank == "HDFC") {
-        [ start_date, end_date, min_date, max_date, isStatementUpdated, isTrimmed, statement_table ] = 
-          getStatementParserHDFC( start_date, end_date, file, isStatementUpdated, isTrimmed, statement_table, statementCache );
-      }
-      if (bank == "ICICI") {
-        [ start_date, end_date, min_date, max_date, isStatementUpdated, isTrimmed, statement_table ] = 
-          getStatementParserICICI( start_date, end_date, file, isStatementUpdated, isTrimmed, statement_table, statementCache );
-      }
-    });
-  }
+  statement_table = [];
+  console.log(statement_files);
+  statement_files.forEach((statement) => {
+    bank = statement.bank;
+    file = statement.file;
+    if (bank == "HDFC") {
+      [ start_date, end_date, min_date, max_date, isStatementUpdated, isTrimmed, statement_table ] = 
+        getStatementParserHDFC( start_date, end_date, file, isStatementUpdated, isTrimmed, statement_table, statementCache );
+    }
+    if (bank == "ICICI") {
+      [ start_date, end_date, min_date, max_date, isStatementUpdated, isTrimmed, statement_table ] = 
+        getStatementParserICICI( start_date, end_date, file, isStatementUpdated, isTrimmed, statement_table, statementCache );
+    }
+  });
       // let fileData = statementCache.get(bank, file);
   if (Array.isArray(statement_table) && statement_table.every(Array.isArray)){
     expense_type = getExpenseType(statement_table.map(row => row[1]));
@@ -94,7 +91,7 @@ exports.getStatement = (req, res, next) => {
     expense_type = ["All"]
   }
 
-  console.log(start_date, end_date, min_date, max_date, statement_files, isStatementUpdated, isTrimmed);
+  console.log("Statement: ", start_date, end_date, min_date, max_date, statement_files, isStatementUpdated, isTrimmed);
   // Render the statement page with the table data
   res.render('statement/statement', {
     start_date: formatDateRev(start_date),
