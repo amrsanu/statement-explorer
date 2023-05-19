@@ -42,8 +42,12 @@
           <tr>
             <th>Date</th>
             <th>Detail</th>
-            <th>Debit Amount</th>
-            <th>Credit Amount</th>
+            <% if (credit_or_debit_option !== "All") { %>
+              <th><%= credit_or_debit_option %> Amount</th>
+            <% } else {%>
+              <th>Debit Amount</th>
+              <th>Credit Amount</th>
+            <% } %>
             <th>Ref Number</th>
             <th>Closing Balance</th>
           </tr>

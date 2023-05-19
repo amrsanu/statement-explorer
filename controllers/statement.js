@@ -14,8 +14,7 @@ const IMAGES = [
   { url: "/images/images2.png", name: "images2" },
   { url: "/images/images3.png", name: "images3" },
   { url: "/images/images4.png", name: "images4" },
-  { url: "/images/images5.png", name: "images5" },
-
+  { url: "/images/images5.png", name: "images5" }
 ]
 
 function getCurrentDate() {
@@ -52,6 +51,34 @@ function formatDateRev(date) {
   return `${year}-${month}-${day}`;
 }
 
+function getExpenseType(transactionDetails){
+  let expense_type = ["All"];
+  transactionDetails.forEach(info => {
+    let trimmedDetail = info.split(" ")[0];
+    const hyphenCount = trimmedDetail.split('-').length - 1;
+    if (hyphenCount > 2) {
+      const parts = trimmedDetail.split('-');
+      const trimmedParts = parts.slice(0, 3);
+      trimmedDetail = trimmedParts.join('-');
+      if (trimmedDetail.length > 30){
+        const trimmedParts = parts.slice(0, 2);
+        trimmedDetail = trimmedParts.join('-');
+      }
+    }
+    if (!info.includes("UPI")){
+      const parts = info.split(' ');
+      const trimmedParts = parts.slice(0, 3);
+      trimmedDetail = trimmedParts.join(' ');
+      if (trimmedDetail.length > 30){
+        const trimmedParts = parts.slice(0, 2);
+        trimmedDetail = trimmedParts.join(' ');
+      }
+    }
+    expense_type.push(trimmedDetail);
+  });
+  return expense_type;
+}
+
 exports.getIndex = (req, res, next) => {
   if (statement_files.length === 0) {
     const images = [];
@@ -79,10 +106,10 @@ exports.getStatement = (req, res, next) => {
   let end_date = req.body.end_date;
   const credit_or_debit = "All";
   const expense_type_option = "All";
-  console.log("Statement: ", start_date, end_date, credit_or_debit, expense_type_option);
+  // console.log("Statement: ", start_date, end_date, credit_or_debit, expense_type_option);
 
   if (statement_files.length === 0) {
-    console.log('No statement files');
+    // console.log('No statement files');
     return res.render('statement/no-statement', {
       bank_option: "Select Bank",
       banks: ["HDFC", "ICICI"],
@@ -98,7 +125,7 @@ exports.getStatement = (req, res, next) => {
       let fileData = statementCache.get(file);
 
       if (fileData) {
-        console.log('Reading File:', file);
+        // console.log('Reading File:', file);
 
         // Parse the CSV file data into a 2D array
         const parsedData = [];
@@ -127,12 +154,11 @@ exports.getStatement = (req, res, next) => {
     if (!end_date) {
       end_date = parseDate(statement_table[statement_table.length - 1][0]);
     }
-    console.log(statement_table[0][0], statement_table[statement_table.length - 1][0]);
-    console.log("Min/Max Statement: ", start_date, end_date, credit_or_debit, expense_type_option);
+    // console.log("Min/Max Statement: ", start_date, end_date, credit_or_debit, expense_type_option);
 
     statementCache.set("statement_table", statement_table);
   } else {
-    console.log('Usning previous statement');
+    // console.log('Usning previous statement');
     statement_table = statementCache.get("statement_table");
   }
   if (statement_files.length !== 0 && isTrimmed){
@@ -152,7 +178,7 @@ exports.getStatement = (req, res, next) => {
     end_date = max_date;
   }
   statementCache.set("statement_table", statement_table);
-  console.log("Get Statement: ", formatDateRev(start_date), formatDateRev(end_date), credit_or_debit, expense_type_option);
+  // console.log("Get Statement: ", formatDateRev(start_date), formatDateRev(end_date), credit_or_debit, expense_type_option);
 
   // Render the statement page with the table data
   res.render('statement/statement', {
@@ -163,7 +189,7 @@ exports.getStatement = (req, res, next) => {
     credit_or_debit_option: credit_or_debit,
     expense_type_option: expense_type_option,
     credit_or_debit: ['All', 'Credit', 'Debit'],
-    expense_type: ['All', 'Food', 'Transportation', 'Entertainment', 'Shopping', 'Others'],
+    expense_type: getExpenseType(statement_table.map(row => row[1])),
     statement_table: statement_table
   });
 };
@@ -179,19 +205,46 @@ exports.postStatement = (req, res, next) => {
   min_date = parseDate(statement_table[0][0]);
   max_date = parseDate(statement_table[statement_table.length - 1][0]);
   
-  console.log("Post Statement: ", start_date, end_date, statement_table[0][0]);
-  console.log("Filter Statement: ", parseDate(start_date), parseDate(end_date), parseDate(statement_table[0][0]));
-  console.log(statement_table[0]);
-  const filteredTable = statement_table.filter((row) => {
-    const currentDate = parseDate(row[0]);
-    return currentDate >= parseDate(start_date) && currentDate <= parseDate(end_date);
-  });
-  filteredTable.sort((a, b) => {
-    const dateA = parseDate(a[0]);
-    const dateB = parseDate(b[0]);
-    return dateA - dateB;
-  });
-  console.log("Filtered Statement: ", filteredTable)
+  console.log("Post Statement: ", start_date, end_date, credit_or_debit, expense_type_option);
+  // console.log("Filter Statement: ", parseDate(start_date), parseDate(end_date), parseDate(statement_table[0][0]));
+  // console.log(statement_table[0]);
+  let filteredTable = [];
+  if (statement_files.length !== 0){
+    statement_table = statementCache.get("statement_table");
+    let indxToRemove = -1;
+    if (credit_or_debit === "Credit"){
+      indxToRemove = 2;
+    }
+    if (credit_or_debit === "Debit"){
+      indxToRemove = 3;
+    }
+    filteredTable = statement_table.map(row => {
+      return row.filter((_, index) => index !== indxToRemove);
+    });
+  
+    filteredTable = filteredTable.filter((row) => {
+      const currentDate = parseDate(row[0]);
+      return currentDate >= parseDate(start_date) && currentDate <= parseDate(end_date);
+    });
+    // console.log(credit_or_debit, filteredTable);
+    if (credit_or_debit !== "All") {
+      filteredTable = filteredTable.filter((row) => {
+        return row[2].trim() !== "0.00";
+      });
+    }
+    if (expense_type_option !== "All") {
+      filteredTable = filteredTable.filter((row) => {
+        return row[1].includes(expense_type_option);
+      });   
+    }
+    
+    filteredTable.sort((a, b) => {
+      const dateA = parseDate(a[0]);
+      const dateB = parseDate(b[0]);
+      return dateA - dateB;
+    });
+  }
+  // console.log("Filtered Statement: ", filteredTable)
   res.render('statement/statement', { 
     start_date: start_date,
     end_date: end_date, 
@@ -200,7 +253,7 @@ exports.postStatement = (req, res, next) => {
     credit_or_debit_option: credit_or_debit,
     expense_type_option: expense_type_option,
     credit_or_debit: ['All', 'Credit', 'Debit'], 
-    expense_type: ['All', 'Food', 'Transportation', 'Entertainment', 'Shopping', 'Others'], 
+    expense_type: getExpenseType(statement_table.map(row => row[1])),
     statement_table: filteredTable
   });
 };
@@ -260,7 +313,7 @@ exports.postNewStatement = (req, res) => {
 exports.postModifyStatement = (req, res, next) => {
   // Assuming statement_files is an array of file names
   let statement_files_to_delete = req.body.statement_file; // Assuming statement_files is an array of file names
-  console.log(statement_files_to_delete);
+  // console.log(statement_files_to_delete);
   isStatementUpdated = false;
 
   if (!Array.isArray(statement_files_to_delete)) {
