@@ -1,65 +1,66 @@
 <%- include('../includes/head.ejs') %>
+  <link rel="stylesheet" href="/css/base.css">
   <link rel="stylesheet" href="/css/bank_statement.css">
   <script src="/utils/date.js"></script>
 </head>
 
 <body>
-    <%- include('../includes/navigation.ejs') %>
-    
-    <h1>Bank Statement</h1>
-
-    <form action="/bank-statement" method="POST">
-      <div>
-        <label for="start_date">Start Date:</label>
-        <input type="date" name="start_date" value="<%= start_date %>" min="<%= min_date %>" max="<%= max_date %>">
-      </div>
-      <div>
-        <label for="end_date">End Date:</label>
-            <input type="date" name="end_date" value="<%= end_date %>" min="<%= min_date %>" max="<%= max_date %>">
-      </div>
-      <div>
-        <label for="category_credit_debit">Credit/Debit:</label>
-        <select name="credit_or_debit">
-            <option value="<%= credit_or_debit_option %>"><%= credit_or_debit_option %></option>
-            <% for (let category of credit_or_debit) { %>
-                <option value="<%= category %>"><%= category %></option>
-            <% } %>
-        </select>
-      </div>
-      <div>
-        <label for="category">ExpenseType:</label>
-            <select name="category">
-                <option value="<%= expense_type_option %>"><%= expense_type_option %></option>
-                <% for (let category of expense_type) { %>
-                    <option value="<%= category %>"><%= category %></option>
-                <% } %>
-            </select>
-      </div>
-        <button type="submit">Filter</button>
-    </form>
-    <section>    
-        <table>
-          <tr>
-            <th>Date</th>
-            <th>Detail</th>
-            <% if (credit_or_debit_option !== "All") { %>
-              <th><%= credit_or_debit_option %> Amount</th>
-            <% } else {%>
-              <th>Debit Amount</th>
-              <th>Credit Amount</th>
-            <% } %>
-            <th>Ref Number</th>
-            <th>Closing Balance</th>
-          </tr>
-          <% for (let i = 0; i < statement_table.length; i++) { %>
-            <tr>
-              <% for (let j = 0; j < statement_table[i].length; j++) { %>
-                <td><%= statement_table[i][j] %></td>
-              <% } %>
-            </tr>
+  <%- include('../includes/navigation.ejs') %>    
+  <h1>Bank Statement</h1>
+  <form action="/bank-statement" method="POST">
+    <div>
+      <label for="start_date">Start Date:</label>
+      <input type="date" name="start_date" value="<%= start_date %>" min="<%= min_date %>" max="<%= max_date %>">
+    </div>
+    <div>
+      <label for="end_date">End Date:</label>
+          <input type="date" name="end_date" value="<%= end_date %>" min="<%= min_date %>" max="<%= max_date %>">
+    </div>
+    <div>
+      <label for="category_credit_debit">Credit/Debit:</label>
+      <select name="credit_or_debit">
+          <option value="<%= credit_or_debit_option %>"><%= credit_or_debit_option %></option>
+          <% for (let category of credit_or_debit) { %>
+              <option value="<%= category %>"><%= category %></option>
           <% } %>
-        </table>
-      </section>
+      </select>
+    </div>
+    <div>
+      <label for="category">ExpenseType:</label>
+          <select name="category">
+              <option value="<%= expense_type_option %>"><%= expense_type_option %></option>
+              <% for (let category of expense_type) { %>
+                  <option value="<%= category %>"><%= category %></option>
+              <% } %>
+          </select>
+    </div>
+    <div>
+      <button type="submit">Filter</button>
+    </div>
+  </form>
+  <section>    
+      <table>
+        <tr>
+          <th>Date</th>
+          <th>Detail</th>
+          <% if (credit_or_debit_option !== "All") { %>
+            <th><%= credit_or_debit_option %> Amount</th>
+          <% } else {%>
+            <th>Debit Amount</th>
+            <th>Credit Amount</th>
+          <% } %>
+          <th>Ref Number</th>
+          <th>Closing Balance</th>
+        </tr>
+        <% for (let i = 0; i < statement_table.length; i++) { %>
+          <tr>
+            <% for (let j = 0; j < statement_table[i].length; j++) { %>
+              <td><%= statement_table[i][j] %></td>
+            <% } %>
+          </tr>
+        <% } %>
+      </table>
+    </section>
 
 <%- include('../includes/end.ejs') %>
 

@@ -6,22 +6,22 @@
 
 #help {
   justify-content: center;
-  padding: 2vw;
+  padding: 2px;
 }
 
 #help ol li {
   list-style: decimal;
-  padding-left: 2vw;
+  padding-left: 2px;
   line-height: 1.5em;
 }
 
 /* Media Queries */
 @media only screen and (max-width: 400px) {
   #help {
-    padding: 4vw;
+    padding: 4px;
   }
 
   #help ol li {
-    padding-left: 4vw;
+    padding-left: 4px;
   }
 }

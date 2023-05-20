@@ -1,11 +1,11 @@
 #navigation {
   background-color: rgb(6, 192, 225);
   color: #000000;
-  margin-top: 2vw;
-  margin-bottom: 2vw;
-  padding: 2vw;
+  margin-top: 10px;
+  margin-bottom: 2px;
+  padding: 0.5rem;
   text-align: center;
-  box-shadow: 0px 0.9375rem 0.625rem rgba(0, 0, 0, 0.2);
+  box-shadow: 2px 5px 5px rgba(0, 0, 0, 0.2); /* adds a subtle shadow */
 }
 
 #navigation ul {
@@ -17,14 +17,13 @@
 }
 
 #navigation li {
-  margin: 0 2vw;
+  margin: 0 20px;
 }
 
 #navigation a {
   color: #000000;
   text-decoration: none;
   font-weight: bold;
-  font-size: 2vw;
   transition: all 0.2s ease-in-out;
 }
 
@@ -32,4 +31,15 @@
   color: #f7df1e;
 }
 
+/* Media Query for Mobile Devices */
+@media only screen and (max-width: 600px) {
+  #navigation li {
+    margin: 0 3px; /* Reduce margin for mobile devices */
+  }
 
+  #navigation a {
+    font-size: 14px; /* Decrease font size for mobile devices */
+    font-weight: regular;
+
+  }
+}

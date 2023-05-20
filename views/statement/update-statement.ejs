@@ -1,28 +1,27 @@
 <%- include('../includes/head.ejs') %>
-<link rel="stylesheet" href="/css/upload_statement.css">
+  <link rel="stylesheet" href="/css/upload_statement.css">
 <script src="/utils/toggle-all.js"></script>
 </head>
 
 <body>
-    <%- include('../includes/navigation.ejs') %>
+  <%- include('../includes/navigation.ejs') %>
     
-    <h1>Bank Statement</h1>
   <h2>Bank Details</h2>
 
   <%- include('../includes/new-statement.ejs') %>
 
-  <% if (statement_files) { %>
+  <% if (statement_files.length > 0) { %>
     <h2>Uploaded Bank Statements</h2>
     <div id="form-container">
-      <form action="/delete-statement" method="POST" >
+      <form action="/delete-statement" method="POST">
         <table>
           <tr>
-            <td><input type="checkbox" onChange="toggle(this)" /></td>
+            <td><input type="checkbox" onChange="toggle(this)"/></td>
             <td><label for="select-all"><strong>Saved Bank Statements</strong></label></td>
           </tr>
           <% for (let statement_file of statement_files) { %>
             <tr>
-              <td><input type="checkbox" id="statement_file" name="statement_file" value="<%= statement_file %>" /></td>
+              <td><input type="checkbox" id="statement_file" name="statement_file" value="<%= statement_file %>"/></td>
               <td><label><%= statement_file %></label></td>
             </tr>
           <% } %>
@@ -32,6 +31,7 @@
           </tr>
         </table>
       </form>
+      
     </div>
   <% } %>  
   

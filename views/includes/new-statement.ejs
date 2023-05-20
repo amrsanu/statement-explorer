@@ -7,8 +7,7 @@
             <tr>
                 <td><label for="bank">Select Bank:</label></td>
                 <td>
-                    <select name="bank">
-                    <option value="<%= bank_option %>"><%= bank_option %></option>
+                    <select name="bank" required>
                     <% for (let bank of banks) { %>
                         <option value="<%= bank %>"><%= bank %></option>
                     <% } %>
@@ -17,7 +16,7 @@
             </tr>
             <tr>
                 <td><label for="statement">Bank Statement:</label></td>
-                <td><input type="file" id="statement" name="statement"></td>
+                <td><input type="file" id="statement" name="statement" required></td>
             </tr>
             <tr>
                 <td></td>

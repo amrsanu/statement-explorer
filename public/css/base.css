@@ -4,7 +4,7 @@
   max-width: 100%;
   box-sizing: border-box;
   overflow-x: auto;
-  font-size: 1.5vw;
+  font-size: 16px;
 }
 
 html {
@@ -15,34 +15,32 @@ h1,
 h2,
 h3 {
   font-family: 'Rajdhani', sans-serif;
-  background-color: #f7df1e; /* yellow */
-  color: #2d2d2d; /* dark gray */
-  padding: 1vw; /* adds padding around the text */
+  background-color: #333; /* yellow */
+  color: #ffffff; /* dark gray */
+  padding: 2px; /* adds padding around the text */
   font-weight: bold; /* makes the text bold */
   text-align: center; /* centers the text */
   text-transform: uppercase; /* makes the text uppercase */
-  box-shadow: 0px 0.3vw 0.5vw rgba(0, 0, 0, 0.2); /* adds a subtle shadow */
-  margin: 0;
-  margin-bottom: 1.5vw; /* adds space between this heading and the next element */
+  box-shadow: 2px 5px 5px rgba(0, 0, 0, 0.2); /* adds a subtle shadow */
+  margin-top: 10px;
+  margin-bottom: 3px; /* adds space between this heading and the next element */
 }
 
 h1 {
-  font-size: 3vw;
+  font-size: 32px;
 }
 
 h2 {
-  font-size: 2vw;
+  font-size: 24px;
 }
 
 h3 {
-  font-size: 1.5vw;
-  text-align: justify;
-  background-color: white;
+  font-size: 20px;
 }
 
 #main-navigation {
   width: 100%;
-  height: 6vw;
+  height: 30px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -72,29 +70,49 @@ h3 {
 
 #main-navigation h1 a:hover,
 #main-navigation h1 a:active {
-  color: white;
+  color: rgb(81, 241, 113);
+}
+
+button[type="submit"] {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 4px;
+  border: none;
+  box-shadow: none;
+  background-color: #0a6018;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+button[type="submit"]:hover {
+  background-color: #1b8a51;
+}
+
+button[type="submit"]:active {
+  background-color: #1eeb39;
 }
 
 /* Media Queries */
 @media only screen and (max-width: 400px) {
   * {
-    font-size: 1vw;
+    font-size: 14px;
   }
 
   h1 {
-    font-size: 3vw;
+    font-size: 24px;
   }
 
   h2 {
-    font-size: 2vw;
+    font-size: 20px;
   }
 
   h3 {
-    font-size: 1.5vw;
+    font-size: 18px;
   }
 
   #main-navigation {
-    height: 10vw;
+    height: 30px;
     padding: 0 2%;
   }
 }

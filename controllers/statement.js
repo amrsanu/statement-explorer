@@ -33,7 +33,6 @@ exports.getIndex = (req, res, next) => {
     statement_table = ' Use the filter to get personalized information from Statement';
 
     return res.render('statement/no-statement', {
-      bank_option: "Select Bank",
       banks: ["HDFC", "ICICI"],
       images: IMAGES,
       upload_error: null,
@@ -70,7 +69,6 @@ exports.getStatement = (req, res, next) => {
   if (statement_files.length === 0) {
     // console.log('No statement files');
     return res.render('statement/no-statement', {
-        bank_option: "Select Bank",
         banks: ["HDFC", "ICICI"],
         images: IMAGES,
         upload_error: null,
@@ -189,7 +187,6 @@ exports.getUpdateStatement = (req, res, next) => {
   res.render('statement/update-statement', {
     pageTitle: 'Update Statement',
     path: '/update-statement',
-    bank_option: "Select Bank",
     banks: ["HDFC", "ICICI"],
     upload_error: null,
     statement_files: files
@@ -244,24 +241,20 @@ exports.postModifyStatement = (req, res, next) => {
   isStatementUpdated = false;
   console.log(statement_files_to_delete);
 
-  if (!Array.isArray(statement_files_to_delete)) {
-    statement_files_to_delete = [statement_files_to_delete];
-  }
-  // Remove files from cache based on the provided file names
-  console.log(statement_files);
-
-  statement_files_to_delete.forEach((file) => {
-    // Remove the file from the cache using the file name as the key
-    console.log(file);
-    statementCache.del(file); 
-    const index = statement_files.findIndex(obj => obj.bank === file.split(": ")[0] && obj.file === file.split(": ")[1]);
-    if (index !== -1) {
-      statement_files.splice(index, 1);
+  if (statement_files_to_delete) {
+    if (!Array.isArray(statement_files_to_delete)) {
+      statement_files_to_delete = [statement_files_to_delete];
     }
-    
-  });
-  console.log(statement_files);
-
+    // Remove files from cache based on the provided file names
+    statement_files_to_delete.forEach((file) => {
+      // Remove the file from the cache using the file name as the key
+      statementCache.del(file); 
+      const index = statement_files.findIndex(obj => obj.bank === file.split(": ")[0] && obj.file === file.split(": ")[1]);
+      if (index !== -1) {
+        statement_files.splice(index, 1);
+      }
+    });
+  }
   return res.redirect('/update-statement');
 };
 
