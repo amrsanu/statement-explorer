@@ -3,6 +3,7 @@ const path = require('path');
 const NodeCache = require('node-cache');
 const csv = require('fast-csv');
 const { pseudoRandomBytes } = require('crypto');
+const { generateBarChart } = require('./visualizer/bar_graph');
 
 const {
   parseDate,
@@ -15,7 +16,7 @@ const { getStatementParserICICI } = require('./bank_parser/icici/icici_parser');
 let statement_files = [];
 const statementCache = new NodeCache();
 let isStatementUpdated = false;
-let isTrimmed = true;
+let isTrimmed = false;
 
 const IMAGES = [
   { url: "/images/image1.png", name: "image1" },
@@ -26,6 +27,7 @@ const IMAGES = [
 ]
 
 exports.getIndex = (req, res, next) => {
+  let statement_table = [];
   if (statement_files.length === 0) {
     const images = [];
     statement_table = ' Use the filter to get personalized information from Statement';
@@ -40,10 +42,19 @@ exports.getIndex = (req, res, next) => {
 
     });
   }
-  return res.render('statement/index', {
+  statement_table = statementCache.get('statement_table');
+  const imageBuffer = generateBarChart(statement_table);
+
+  // Cache the buffers for future use
+  statementCache.set('barImageBuffer', imageBuffer);
+
+  // Render the EJS template with the buffer data
+  res.render('statement/index', {
     pageTitle: 'Home',
-    path: '/'
+    path: '/',
+    barImageBuffer: imageBuffer.toString('base64'),
   });
+
 };
 
 exports.getStatement = (req, res, next) => {
@@ -69,7 +80,6 @@ exports.getStatement = (req, res, next) => {
   }
   let min_date = start_date;
   let max_date = end_date;
-
   statement_table = [];
   console.log(statement_files);
   statement_files.forEach((statement) => {
@@ -84,7 +94,8 @@ exports.getStatement = (req, res, next) => {
         getStatementParserICICI( start_date, end_date, file, isStatementUpdated, isTrimmed, statement_table, statementCache );
     }
   });
-      // let fileData = statementCache.get(bank, file);
+  
+  isStatementUpdated = true;
   if (Array.isArray(statement_table) && statement_table.every(Array.isArray)){
     expense_type = getExpenseType(statement_table.map(row => row[1]));
   } else{

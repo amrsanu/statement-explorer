@@ -47,14 +47,12 @@ function getStatementParserHDFC(
     // console.log("Min/Max Statement: ", start_date, end_date, credit_or_debit, expense_type_option);
 
     statementCache.set("statement_table", statement_table);
-    
-    if (isTrimmed){
-    isTrimmed = false;
+    console.log("Trimming: ", isTrimmed);    
+    isTrimmed = true;
     statement_table = statementCache.get("statement_table");
     statement_table = statement_table.map(row => {
         return row.filter((_, index) => index !== 2);
     });
-    }
     min_date = parseDate(statement_table[0][0]);
     max_date = parseDate(statement_table[statement_table.length - 1][0]);
     

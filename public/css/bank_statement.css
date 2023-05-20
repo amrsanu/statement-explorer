@@ -100,3 +100,24 @@ form:before {
   transform: scale(1.2);
   margin-top: 1.5vw;
 }
+
+.chart-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.chart-image {
+  width: 80%;
+
+}
+
+@media (max-width: 767px) {
+  .chart-image {
+    width: 100%;
+  }
+}

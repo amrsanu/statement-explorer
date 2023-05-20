@@ -5,5 +5,11 @@
 
 <body>
     <%- include('../includes/navigation.ejs') %>
+    <section>
+        <h1 id="heading1">Monthly Credit & Debit View</h1>
+        <div class="chart-container">
+            <img class="chart-image" src="data:image/png;base64,<%= barImageBuffer.toString('base64') %>" alt="Credit Bar Chart">
+          </div>
+    </section>
     
 <%- include('../includes/end.ejs') %>
