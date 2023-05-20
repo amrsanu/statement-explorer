@@ -1,6 +1,7 @@
 {
     "version": 2,
-    "installCommand": " npm rebuild && cp ./libx86/* node_modules/canvas/build/Release && npm install",
+    "installCommand": "npm install",
+    "buildCommand": "npm rebuild && cp ./libx86/* node_modules/canvas/build/Release",
     "builds": [
         {
             "src": "app.js",
