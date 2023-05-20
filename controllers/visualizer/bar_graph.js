@@ -1,4 +1,4 @@
-const { createCanvas, registerFont } = require('canvas');
+const { createCanvas } = require('canvas');
 const Chart = require('chart.js/auto');
 
 const credit = {
